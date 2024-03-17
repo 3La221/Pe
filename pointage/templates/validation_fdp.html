@@ -1,0 +1,106 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <style>
+     .left{
+        margin:100px
+     }
+     .btn{
+        margin : 10px;
+     }
+
+     table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    input[type="number"] {
+        width: 100px;
+        padding: 5px;
+        box-sizing: border-box;
+    }
+    .container {
+        margin : 80px 70px
+    }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="{% url 'menu_view' %}">Petromag</a>
+          
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+             
+             
+              
+            </ul>
+           
+          </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row justify-content-between">
+            <div >
+                <form method="POST">  
+                    {% csrf_token %}
+
+                    <input type="date" class="form-control mb-3" id="date" name="date" required>
+
+                    
+                    <table class="table">
+                        <thead> 
+                            <tr>
+                                <th> Nom </th>
+                                <th> M </th>
+                                <th> Total </th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            {% for employe in employees %}
+                            <tr>
+                                <td><p>{{ employe }}</p></td>
+                                <td><input type="number" name="{{ employe.ID }}Rmois" value="0" min="0"
+                                    max={{ employe.remboursement_total }} step="500"> Da</td>
+                                <td><p>{{ employe.remboursement_total }} Da</p></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    
+                    <button class="btn btn-info" type="sumbit" {% if today < 16%} disabled {% endif %} name="button_without_validation">Creer Fiche de Pointage Sans Validation</button>
+                    <button class="btn btn-warning" type="sumbit" {% if today < 16 or exist%} disabled {% endif %} name="button_with_validation" >Creer Fiche de Pointage Avec Validation</button>
+                    {% if exist %}
+                        <a href={% url 'download_excel' p%}> Telecharger </a>
+                    {% endif %}
+                
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</body>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+</html>

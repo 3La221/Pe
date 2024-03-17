@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pointage</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+       /* Custom CSS for modern styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+header {
+    padding: 10px;
+    text-align: center;
+    font-size: 1.5em;
+}
+
+table {
+    border-radius: 10px; /* Rounded corners for table */
+    overflow: hidden; /* Hide overflowing border radius */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow for table */
+    margin-bottom:20px
+}
+
+th, td {
+    text-align: center;
+    padding: 10px;
+    border: none; /* Remove borders from all columns */
+    align-text :center;
+    width:100px;
+}
+
+th {
+    background-color: #343a40; /* Dark background color for table headers */
+    font-size: 1em;
+    color:white;
+}
+
+.today {
+    background-color: #0056b3 !important;
+}
+
+td {
+    background-color: white;
+    color: black;
+    font-size: 1.0em;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.date-group {
+    display: flex;
+    flex-direction: row; /* Make them appear horizontally */
+    align-items: center;
+    margin-bottom: 5px; /* Add margin-bottom for spacing */
+}
+
+.date-group label {
+    margin-right: 10px; /* Add margin-right to separate label and select */
+}
+
+.date-group select {
+    height: 30px; /* Set a fixed height for the select box */
+    margin-left: 0; /* Remove margin-left to align the select box with the label */
+}
+
+td.date-group {
+    height: 40px; /* Set a fixed height for the td.date-group element */
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.step-links a {
+    padding: 10px;
+    margin: 0 5px;
+    text-decoration: none;
+    color: #007BFF;
+    border: 1px solid #007BFF;
+    border-radius: 5px;
+}
+
+.step-links .current {
+    padding: 10px;
+    margin: 0 5px;
+    background-color: #007BFF;
+    color: white;
+    border: 1px solid #007BFF;
+    border-radius: 5px;
+}
+
+.back-button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #34a4b0;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+}
+.header{
+    margin-top:50px;
+    display : flex ;
+    justify-content : center;
+    align-items: center;
+    flex-direction : column
+}
+
+
+#query {
+  
+    width: 350px; /* Make the search input field fill the entire width */
+    padding: 10px; /* Add padding for better appearance */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 5px; /* Add some border radius for rounded corners */
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+    transition: border-color 0.3s; /* Add transition for border color change */
+   
+
+}
+.secondheader{
+    display:flex;
+    margin:15px;
+    justify-content:center;
+    align-items:center;
+}
+
+.desc{
+    width:400px;
+}
+.back-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 10px;
+    background-color:  #343a40; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+}
+a::hover{
+    text-decoration: none;
+
+}
+tr.highlight td {
+            background-color: rgb(255, 153, 102);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        {% comment %} <h1> Petromag </h1>
+        <h2> Station : {{instances.0.station}} </h2> {% endcomment %}
+        <h3>{{ date|date:"Y-m-d" }}</h3> 
+        <a href="{% url 'menu_view' %}" class="back-button">Retour</a>
+    </div>
+    <div > 
+        
+        <input type="text" id="query" class="search" name="query"  placeholder="Search by Matricule or Name...">  
+            
+
+
+    </div>
+    
+    <table>
+        <tr> 
+            <th>Matricule</th>
+            <th>Employe</th>
+            {% for d in date_range %}
+            {% if d == date %}
+            <th class="today"> {{d|date:"d"}}</th>
+            {% else %}
+            <th> {{d|date:"d"}}  </th>
+            {% endif %}
+            {% endfor %}
+        </tr>
+            <form  id="form" method="POST" >
+                {% csrf_token %}
+                {% for i in instances %}
+                <tr {% if i in overwork %} class="highlight" {%endif%}>
+                    <td>{{ i.ID }}</td>   
+                    <td>{{ i.Nom }} {{ i.Prenom }}</td> 
+                    {% for id, list in res.items %}
+                        {% if id == i.ID %}
+                            {% for date, result in list.items %}
+                                {% if result.is_editable or result.open_to_edit  %}
+                                    <td> 
+                                        <select  id="{{ i.ID }}_{{ date }}" name="{{ i.ID }}_{{ date }}">
+                                            {% comment %} <option value="">-</option> {% endcomment %}
+                                            <option value="{{ result.code.ID }}" selected>{{ result.code.ID }}</option>
+                                            {% for code in codes %}
+                                                <option value="{{ code.ID }}">{{ code.ID }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                               
+                               
+                                {% elif result.code.ID != null  %}
+                                    {% if result.date == today %}
+                                    <td> 
+                                        <select  id="{{ i.ID }}_{{ date }}" name="{{ i.ID }}_{{ date }}" class="specific-select"  disabled >
+                                        
+                                            <option value="{{ result.code.ID }}" selected>{{ result.code.ID }}</option>
+                                            {% for code in codes %}
+                                                <option value="{{ code.ID }}">{{ code.ID }}</option>
+                                            {% endfor %}
+                                        </select>
+
+                                    </td>
+                                    
+                                    {% else %}
+                                    <td> <div>{{ result.code.ID }}</div></td>
+                                    {% endif %}
+                                    
+                                {% else %}
+                                    <td> 
+                                        <select id="{{ i.ID }}_{{ date }}" name="{{ i.ID }}_{{ date }}">
+                                                <option value="">-</option>
+                                                {% for code in codes %}
+                                                    <option value="{{ code.ID }}">{{ code.ID }}</option>
+                                                {% endfor %}
+                                        </select>
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <div class="secondheader"> 
+                    <button type="submit"  id="submitButton" class="btn btn-success"> Sauvgarder </button>    
+                    <button type="button" id="modifyBtn" class="btn btn-secondary mx-3" > Modifier </button>
+
+                </div>
+            
+
+            </form>
+
+
+    
+    </table>
+    <table>
+        <tr>
+            <th>Code</th>
+            <th>descripton</th>
+        </tr>
+        {% for code in codes %}
+        <tr>
+            <td>{{code.ID}}</td>
+            <td class="desc">{{code.Description}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% comment %} <a href="{% url 'menu_view' %}" class="back-button">Retour</a>    {% endcomment %}
+</body>
+
+<script>
+    document.getElementById('modifyBtn').addEventListener('click', function() {
+        console.log("nice")
+        // Get the specific select elements you want to modify
+        var selectElements = document.querySelectorAll('.specific-select');
+        // Loop through each select element
+        selectElements.forEach(function(select) {
+            // Toggle the disabled attribute
+            select.disabled = !select.disabled;
+        });
+    });
+    // Function to handle the search functionality
+    function search() {
+        // Get the input value
+        var query = document.getElementById('query').value.toLowerCase();
+        // Get all table rows
+        var rows = document.querySelectorAll('table tr');
+
+        // Loop through each row
+        for (var i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
+            var id = rows[i].getElementsByTagName('td')[0].innerText.toLowerCase();
+            var name = rows[i].getElementsByTagName('td')[1].innerText.toLowerCase();
+            // Check if the query matches the ID or Name
+            if (id.includes(query) || name.includes(query)) {
+                rows[i].style.display = '';
+            } else {
+                rows[i].style.display = 'none'; // Hide the row if it doesn't match
+            }
+        }
+        
+    }
+    
+    // Add event listener to the input field
+    document.getElementById('query').addEventListener('input', search);
+    
+     document.getElementById('form').addEventListener('submit', function() {
+     
+       
+
+    // Disable the submit button to prevent multiple submissions
+        submitButton.disabled = true;
+    // Optional: Reload the current tab
+    });
+</script>
+</html>

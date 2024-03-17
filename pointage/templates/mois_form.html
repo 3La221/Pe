@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Month Selection Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5; /* Light grey background */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* 100% of the viewport height */
+            margin: 0;
+        }
+
+        form {
+            width: 50%; /* Adjust the width as needed */
+            background-color: white; /* White color for the form background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow effect */
+        }
+
+        label {
+            font-size: 16px;
+            color: white; /* White text color */
+            background-color: #ff9900; /* Light orange background */
+            padding: 8px 12px; /* Adjust the padding as needed */
+            border-radius: 5px; /* Rounded corners */
+            display: block; /* Display as block to move it to a new line */
+            margin-bottom: 20px; /* Add margin to create space between the label and the form */
+            font-weight: bold; /* Make the label text bold */
+        }
+
+        select {
+            width: 100%; /* Make the dropdown fill the container width */
+            padding: 10px; /* Add padding for better appearance */
+            margin-bottom: 20px; /* Add margin for spacing */
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #34a4b0; /* Blue-green button color */
+            color: white; /* White text on button */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <form method="post" action="{% url 'affichage_mois' instance.ID %}">
+        {% csrf_token %}
+        <label for="month">Mois:</label>
+        <select id="month" name="month">
+            <option value="1">16 Janvier - 15 Fevrier</option>
+            <option value="2">16 Fevrier - 15 Mars</option>
+            <option value="3">16 Mars - 15 Avril</option>
+            <option value="4">16 Avril - 15 Mai</option>
+            <option value="5">16 Mai - 15 Juin</option>
+            <option value="6">16 Juin - 15 Juillet</option>
+            <option value="7">16 Juillet - 15 Aout</option>
+            <option value="8">16 Aout - 15 Septembre</option>
+            <option value="9">16 Septembre - 15 Octobre</option>
+            <option value="10">16 Octobre - 15 Novembre</option>
+            <option value="11">16 Novembre - 15 Decembre</option>
+            <option value="12">16 Decembre - 15 Janvier</option>
+        </select>
+        <button type="submit">Avancee</button>
+    </form>
+</body>
+</html>
